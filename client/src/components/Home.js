@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-import UserService from "../services/user.service";
+import Service from "../services/service";
 
 const Home = () => {
   const [content, setContent] = useState("");
 
   useEffect(() => {
-    UserService.getPublicContent().then(
+    Service.getPublicContent().then(
       (response) => {
         setContent(response.data);
       },
@@ -23,7 +23,7 @@ const Home = () => {
 
   return (
     <div className="container">
-      <header className="jumbotron">
+      <header className="jumbotron text-center">
         <h3>{content}</h3>
       </header>
     </div>

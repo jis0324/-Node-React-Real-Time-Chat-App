@@ -30,3 +30,45 @@ label {
   -webkit-border-radius: 50%;
   border-radius: 50%;
 }
+
+.panel {
+  margin-bottom: 20px;
+  background-color: #fff;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+}
+
+.panel-primary {
+  border-color: #343a40;
+}
+
+.panel-primary > .panel-heading {
+  color: #fff;
+  background-color: #343a40;
+  border-color: #343a40;
+}
+
+.panel-heading {
+  padding: 10px 15px;
+  border-bottom: 1px solid transparent;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+.contact-list .contact-user{
+  border-top: 1px solid #f1f2f2;
+  border-bottom: 1px solid #f1f2f2;
+  cursor: pointer;
+}
+
+.contact-list .contact-user:hover{
+  background-color: #e9ecef;
+}
+
+img.profile-photo-lg{
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+}

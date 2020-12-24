@@ -39,8 +39,7 @@ exports.signup = (req, res) => {
 
             res.send({ message: "User was registered successfully!" });
           });
-        }
-      );
+        });
     } else {
       Role.findOne({ name: "user" }, (err, role) => {
         if (err) {
@@ -98,6 +97,7 @@ exports.signin = (req, res) => {
       for (let i = 0; i < user.roles.length; i++) {
         authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
       }
+      
       res.status(200).send({
         id: user._id,
         username: user.username,
