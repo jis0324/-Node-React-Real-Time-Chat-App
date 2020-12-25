@@ -6,10 +6,13 @@ const ChatRoom = (props) => {
   const [userList, setUserList] = useState([]);
   const [messageList, setMessageList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchFlag, setSearchFlag] = useState(false);
+  const [listName, setListName] = useState("CONTACT LIST");
 
   useEffect(() => {
     Service.getContactList().then(
       (response) => {
+        console.log(response.data.data)
         setUserList(response.data.data);
       },
       (error) => {
@@ -26,8 +29,12 @@ const ChatRoom = (props) => {
   const onChangeSearchKey = (e) => {
     const searchkey = e.target.value
     setLoading(true);
+    setUserList([]);
     
     if (searchkey === "") {
+      setSearchFlag(false);
+      setListName("CONTACT LIST");
+
       Service.getContactList().then(
         (response) => {
           setUserList(response.data.data);
@@ -44,6 +51,10 @@ const ChatRoom = (props) => {
         }
       );
     } else {
+      setSearchFlag(true);
+      setUserList([]);
+      setListName("SEARCH LIST");
+
       Service.getSearchContactList(searchkey).then(
         (response) => {
           console.log(response.data.data);
@@ -65,16 +76,20 @@ const ChatRoom = (props) => {
   };
 
   const handleAddContact = (id) => {
-    console.log(id)
     Service.addContact(id).then(
       (response) => {
         console.log(response);
-      }, 
+      },
       (error) => {
         console.log(error);
       }
     );
   };
+
+  const handleChatContact = (id) => {
+    console.log(id);
+  }
+
   // const [newMessage, setNewMessage] = useState("");
 
   // const handleNewMessageChange = (event) => {
@@ -93,7 +108,7 @@ const ChatRoom = (props) => {
           <div className="userWrap">
             <div className="panel panel-primary">
               <div className="panel-heading">
-                CONTACT LIST
+                {listName}
               </div>
               <div className="panel-body p-2">
                 <input
@@ -103,12 +118,22 @@ const ChatRoom = (props) => {
                   id="search"
                   onChange={onChangeSearchKey}
                 />
-                {loading ? (
-                  <span className="spinner-border spinner-border-sm d-block mx-auto"></span>
-                ) : (
-                  <div className="contact-list my-3">
-                    {userList.map((user, index) => (
-                      <div key={index} onClick={() => handleAddContact(user._id)} className="contact-user py-2 row m-auto">
+                
+                <div className="contact-list my-3">
+                  { searchFlag ? (
+                      userList.map((user, index) => (
+                        <div key={index} onClick={() => handleAddContact(user._id)} className="contact-user py-2 row m-auto">
+                          <div className="col-md-4 col-sm-4">
+                            <img src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" alt="user" className="profile-photo-lg" />
+                          </div>
+                          <div className="col-md-8 col-sm-8 m-auto">
+                            <h5>{user.username}</h5>
+                          </div>
+                        </div>
+                      ))
+                  ) : (
+                    userList.map((user, index) => (
+                      <div key={index} onClick={() => handleChatContact(user._id)} className="contact-user py-2 row m-auto">
                         <div className="col-md-4 col-sm-4">
                           <img src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" alt="user" className="profile-photo-lg" />
                         </div>
@@ -116,10 +141,15 @@ const ChatRoom = (props) => {
                           <h5>{user.username}</h5>
                         </div>
                       </div>
-                    ))}
-                    
-                  </div>
-                )}
+                    ))
+                  )}
+                  {loading ? (
+                    <span className="spinner-border spinner-border-sm d-block mx-auto"></span>
+                  ) : (
+                    <span></span>
+                  )}
+                </div>
+                
               </div>
             </div>
           </div>
