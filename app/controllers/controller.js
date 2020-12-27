@@ -7,13 +7,17 @@ exports.allAccess = (req, res) => {
   res.status(200).send("Let's Chat!");
 };
 
-const getUsersFromContacts = async (contacts) => {
-  var return_data = [];
-  for (const contact of contacts) {
-    var return_item = await User.findById(contact, {_id: 1, username: 1});
-    return_data.push(return_item)
-  }
+const getUsersFromContacts = (contacts) => {
+  var return_data = Promise.all(contacts.map(contact => User.findById(contact, {_id: 1, username: 1})));
   return return_data;
+}
+
+exports.checkAuth = (req, res) => {
+  User.findById(req.userId).then((user) => {
+    res.status(200).send({user: user});
+    return;
+  })
+  
 }
 
 exports.getContactList = (req, res) => {
@@ -62,12 +66,12 @@ exports.searchContactList = (req, res) => {
 };
 
 exports.addContact = (req, res) => {
-  let contactId = req.body.contactId;
+  var contactId = req.body.contactId;
 
   Contact.findOne({
     user: req.userId
   },
-  (err, user) => {
+  async (err, user) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
@@ -75,18 +79,55 @@ exports.addContact = (req, res) => {
 
     if (user.contacts.indexOf(contactId) < 0) {
       user.contacts.unshift(contactId);
-      user = user.save(err, result => {
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
-        return result;
-      });
+      user = await user.save();
     }
 
-    res.status(200).send({ message: "success" });
+    var data = await getUsersFromContacts(user.contacts);
+    res.status(200).send({data: data});
+    return;
   });
 }
+
+exports.getMessages = async (data) => {
+  var roomName1 = data.userId + "-" + data.objId;
+  var roomName2 = data.objId + "-" + data.userId;
+  var messages = await Message.find({
+    room: {
+      $regex: roomName1 | roomName2
+    }}, {limit:20}).sort({date: -1}).exec((err, result) => {
+      if (err) console.log(err);
+      console.log(result);
+    });
+
+  return messages;
+}
+
+exports.saveNewMessage = async (data) => {
+  return await Message.create(data);
+  // User.find({},'login bio avatar_url',).sort({created_at:-1}).exec(function (err, result) {
+  //   if (err) console.log(err);
+  //   console.log(result);
+  //   res.render('main', {
+  //     dataarray: result,
+  //     _user: req.user
+  //   })
+  // })
+}
+// exports.getMessages = async (req, res) => {
+//   var userId = req.userId;
+//   var objId = req.query.objId
+
+//   var sendMsgs = await Message.find({user: userId, receiver: objId});
+//   var receiveMsgs = await Message.find({user: objId, receiver: userId});
+
+//   var data = {
+//     sendMsgs: sendMsgs,
+//     receiveMsgs: receiveMsgs
+//   }
+//   console.log(data);
+//   // res.status(200).send({data: data});
+//   return data;
+// }
 
 
 

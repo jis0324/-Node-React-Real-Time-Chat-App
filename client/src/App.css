@@ -63,7 +63,8 @@ label {
   cursor: pointer;
 }
 
-.contact-list .contact-user:hover{
+.contact-list .contact-user:hover,
+.active {
   background-color: #e9ecef;
 }
 

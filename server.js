@@ -1,7 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const socket = require('socket.io');
 const dbConfig = require("./app/config/db.config");
+const socketEvents = require('./app/sockets/socketEvents');
 
 const app = express();
 
@@ -43,11 +45,16 @@ app.get("/", (req, res) => {
 require("./app/routes/auth.routes")(app);
 require("./app/routes/routes")(app);
 
+
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+
+// set Socket IO
+const io = socket(server);
+socketEvents(io);
 
 function initial() {
   Role.estimatedDocumentCount((err, count) => {

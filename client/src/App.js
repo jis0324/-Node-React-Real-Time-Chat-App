@@ -9,7 +9,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
 import Profile from "./components/Profile";
-import ChatRoom from "./components/Chat";
+import ChatRoom from "./components/PublicChat";
 
 const App = () => {
   const [currentUser, setCurrentUser] = useState(undefined);

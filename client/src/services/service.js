@@ -2,6 +2,16 @@ import axios from "axios";
 
 const API_URL = "http://localhost:8080/api/";
 
+const authInfo = () => {
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  if (user && user.accessToken) {
+    return user;
+  } else {
+    return {};
+  }
+}
+
 const authHeader = () => {
   const user = JSON.parse(localStorage.getItem('user'));
 
@@ -14,6 +24,10 @@ const authHeader = () => {
 
 const getPublicContent = () => {
   return axios.get(API_URL + "all");
+};
+
+const checkAuthorized = () => {
+  return axios.get(API_URL + "checkauth", { headers: authHeader() });
 };
 
 const getContactList = () => {
@@ -32,6 +46,11 @@ const addContact = (id) => {
     })
 }
 
+const getMessages = (obj_id) => {
+  return axios
+    .get(API_URL + "getmsgs", { headers: authHeader(), params: {objId: obj_id} });
+}
+
 // const getUserBoard = () => {
 //   return axios.get(API_URL + "user", { headers: authHeader() });
 // };
@@ -45,10 +64,13 @@ const addContact = (id) => {
 // };
 
 export default {
+  authInfo,
+  checkAuthorized,
   getPublicContent,
   getContactList,
   getSearchContactList,
-  addContact
+  addContact,
+  getMessages
   // getUserBoard,
   // getModeratorBoard,
   // getAdminBoard,

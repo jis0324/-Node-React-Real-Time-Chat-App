@@ -5,12 +5,11 @@ const Message = mongoose.model(
   new mongoose.Schema({
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
     },
     receiver: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
     },
+    room: String,
     message: String,
     date: {
         type: Date,
