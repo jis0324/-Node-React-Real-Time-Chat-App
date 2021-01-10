@@ -63,13 +63,23 @@ label {
   cursor: pointer;
 }
 
-.contact-list .contact-user:hover,
-.active {
-  background-color: #e9ecef;
-}
-
 img.profile-photo-lg{
   height: 50px;
   width: 50px;
   border-radius: 50%;
+}
+
+.chat-list {
+  height: calc(100vh - 250px);
+  overflow-y: auto;
+}
+
+.panel-body {
+  position: relative;
+}
+
+.notifications {
+  position: absolute;
+  width: 98%;
+  background: white;
 }

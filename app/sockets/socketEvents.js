@@ -15,7 +15,7 @@ exports = module.exports = function(io) {
     // //Set Listeners
     io.sockets.on( "connection", function (socket) {
 
-        socket.on("PublicJoin", function (user) {
+        socket.on("PublicJoin", async (user) => {
             delete user.roles;
             delete user.password;
             delete user.__v;
@@ -25,14 +25,20 @@ exports = module.exports = function(io) {
             }
 
             socket.username = user.username;
+            socket.room = publicRoom;
             socket.join(publicRoom);
+            
+            var oldMessages = await controller.getOldMessages(0);
+
+            // send oldMessages to client
+            socket.emit("OldPublicMessages", oldMessages);
 
             // echo to client they've connected
             socket.emit("Notification", '🔵 you have connected to ' + publicRoom);
             socket.emit("OnlineUsers", publicRoomUsers);
 
             // echo to selected group that a person has connected to their group
-            socket.broadcast.to(publicRoom).emit("Notification", '🔵' + socket.username + ' has connected to this room');
+            socket.broadcast.to(publicRoom).emit("Notification", '🔵 <b>' + socket.username + '</b> has connected to this room');
             socket.broadcast.to(publicRoom).emit("OnlineUsers", publicRoomUsers);
         });
         
@@ -47,37 +53,18 @@ exports = module.exports = function(io) {
             }
             
             if (existFlag) {
-                socket.broadcast.to(publicRoom).emit("Notification", '🔴 ' + socket.username + ' has disconnected');
+                socket.broadcast.to(publicRoom).emit("Notification", '🔴 <b>' + socket.username + '</b> has disconnected');
                 socket.broadcast.to(publicRoom).emit("OnlineUsers", publicRoomUsers);
                 socket.leave(publicRoom);
             }
         });
         
-        // socket.on("disconntect", function (data) {
-        //     if (!socket.nickname) return;
-        //     for (i = 0; i < users.length; i++) {
-        //         if (users[i][0] == socket.nickname) {
-        //             if (users[i][1] == socket.room) {
-        //                 users.splice(i, 1)
-        //                 break;
-        //             }
-        //         }
-        //     }
-        //     // userlist update
-        //     updateNicknames([socket.nickname, socket.room]);
-        //     // echo globally that this client has left
-        //     socket.broadcast.to(socket.room).emit(SocketEvents.updatechat, '🔴', socket.nickname + ' has disconnected');
-        //     delete socketUsers[socket.nickname+'_'+socket.room];
-    
-        //     socket.leave(socket.room);
-        // });
-
-        
-        // // New Message
-        // socket.on("newMessage", async data => {
-        //     await controller.saveNewMessage(data);
-        //     io.emit("newMessage", data);
-        // });
+        // New Message
+        socket.on("PublicNewMsg", async data => {
+            var newMsg = await controller.saveNewMessage(data);
+            socket.broadcast.to(publicRoom).emit("NewMsgUpdate", newMsg);
+            socket.emit("NewMsgUpdate", newMsg);
+        });
 
 
 

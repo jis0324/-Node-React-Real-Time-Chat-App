@@ -41,7 +41,7 @@ const getSearchContactList = (key) => {
 const addContact = (id) => {
   var data = {"contactId": id};
   return axios
-    .post(API_URL + "addcontact", data, { 
+    .post(API_URL + "addcontact", data, {
       headers: authHeader(),
     })
 }

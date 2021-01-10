@@ -14,20 +14,20 @@ module.exports = function(app) {
 
   app.get("/api/checkauth", [authJwt.verifyToken], controller.checkAuth);
 
-  app.get("/api/contactlist", [authJwt.verifyToken], controller.getContactList);
+  // app.get("/api/contactlist", [authJwt.verifyToken], controller.getContactList);
 
-  app.get("/api/searchcontactlist", [authJwt.verifyToken], controller.searchContactList);
+  // app.get("/api/searchcontactlist", [authJwt.verifyToken], controller.searchContactList);
 
-  app.post(
-    "/api/addcontact",
-    [
-      authJwt.verifyToken,
-      // verifyContact.checkContactExisted
-    ],
-    controller.addContact
-  );
+  // app.post(
+  //   "/api/addcontact",
+  //   [
+  //     authJwt.verifyToken,
+  //     // verifyContact.checkContactExisted
+  //   ],
+  //   controller.addContact
+  // );
 
-  app.get("/api/getmsgs", [authJwt.verifyToken], controller.getMessages);
+  // app.get("/api/getmsgs", [authJwt.verifyToken], controller.getMessages);
 
   app.get("/api/user", [authJwt.verifyToken], controller.userBoard);
 

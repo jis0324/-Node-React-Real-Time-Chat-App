@@ -1,10 +1,26 @@
 const mongoose = require("mongoose");
 
-const Message = mongoose.model(
-  "Message",
+const PublicMessage = mongoose.model(
+  "PublicMessage",
   new mongoose.Schema({
     user: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    },
+    message: String,
+    date: {
+        type: Date,
+        default: () => new Date()
+    }
+  })
+);
+
+const PrivateMessage = mongoose.model(
+  "PrivateMessage",
+  new mongoose.Schema({
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
     },
     receiver: {
       type: mongoose.Schema.Types.ObjectId,
@@ -13,9 +29,12 @@ const Message = mongoose.model(
     message: String,
     date: {
         type: Date,
-        default: () => new Date(+new Date() + 7*24*60*60*1000)
+        default: () => new Date()
     }
   })
 );
 
-module.exports = Message;
+module.exports = {
+  PublicMessage,
+  PrivateMessage
+};
